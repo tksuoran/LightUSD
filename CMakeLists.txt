@@ -443,6 +443,16 @@ if(MSVC)
   add_compile_definitions(_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH)
 endif()
 
+# Flags that silence warnings in bundled third-party sources (zstd, nanoimage,
+# ...). cl.exe accepts "-w" as "/w" but then reports D9025 ("overriding /W1
+# with /w") whenever the parent project has already set a /Wn level, so keep
+# third-party sources at the project warning level on MSVC.
+if(MSVC)
+  set(LIGHTUSD_THIRD_PARTY_WARNING_FLAGS "")
+else()
+  set(LIGHTUSD_THIRD_PARTY_WARNING_FLAGS "-w")
+endif()
+
 # [ccache]
 if(LIGHTUSD_USE_CCACHE)
   if(MSVC)
@@ -1003,7 +1013,7 @@ if(LIGHTUSD_WITH_ZSTD_COMPRESSION)
     set_source_files_properties(
       ${PROJECT_SOURCE_DIR}/src/external/zstd.c
       PROPERTIES COMPILE_DEFINITIONS "ZSTD_DISABLE_ASM=1"
-                 COMPILE_FLAGS "-w")
+                 COMPILE_FLAGS "${LIGHTUSD_THIRD_PARTY_WARNING_FLAGS}")
   else()
     find_package(zstd REQUIRED)
   endif()
@@ -1056,11 +1066,11 @@ if(LIGHTUSD_WITH_NANOIMAGE)
     ${PROJECT_SOURCE_DIR}/src/external/nanoimage/nanoimage_jpeg.c
     ${PROJECT_SOURCE_DIR}/src/external/nanoimage/nanoimage_png.c
     ${PROJECT_SOURCE_DIR}/src/external/nanoimage/nanoimage_tga.c
-    PROPERTIES COMPILE_FLAGS "-w")
+    PROPERTIES COMPILE_FLAGS "${LIGHTUSD_THIRD_PARTY_WARNING_FLAGS}")
   # nanoimage_zlib uses miniz (bundled) instead of system zlib
   set_source_files_properties(
     ${PROJECT_SOURCE_DIR}/src/external/nanoimage/nanoimage_zlib.c
-    PROPERTIES COMPILE_FLAGS "-w" COMPILE_DEFINITIONS "NI_USE_MINIZ"
+    PROPERTIES COMPILE_FLAGS "${LIGHTUSD_THIRD_PARTY_WARNING_FLAGS}" COMPILE_DEFINITIONS "NI_USE_MINIZ"
                INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/src/external)
   list(APPEND LIGHTUSD_DEP_SOURCES
        ${PROJECT_SOURCE_DIR}/src/external/nanoimage/nanoimage_alloc.c
