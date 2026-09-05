@@ -1,8 +1,17 @@
 // SPDX-License-Identifier: Apache 2.0
 // Shared physics-joint reconstruct helpers, #included INSIDE namespace lightusd::prim by
 // prim-reconstruct-physics{,3,4}.cc (each instantiates them for its joint types; internal linkage).
+#if defined(__GNUC__) && !defined(__clang__)
+    // Check if GCC version is 4.6 or higher
+    #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+        #define GCC_DIAGNOSTIC_PUSH_POP_SUPPORTED 1
+    #endif
+#endif
+
+#if defined(GCC_DIAGNOSTIC_PUSH_POP_SUPPORTED)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 // Helper: check if any property starts with a given prefix
 static bool HasPropertyPrefix(const PropertyMap &properties, const std::string &prefix) {
   for (const auto &prop : properties) {
@@ -107,4 +116,6 @@ static bool ReconstructJointBaseProperties(
 
   return true;
 }
+#if defined(GCC_DIAGNOSTIC_PUSH_POP_SUPPORTED)
 #pragma GCC diagnostic pop
+#endif
