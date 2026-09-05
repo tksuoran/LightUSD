@@ -733,7 +733,7 @@ static void f32_to_f16_f16c(uint16_t *dst, const float *src, size_t n) {
         _mm_storeu_si128(
             (__m128i *)(dst + i),
             _mm256_cvtps_ph(_mm256_loadu_ps(src + i),
-                            _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC));
+                            _MM_FROUND_TO_NEAREST_INT));
     if (i < n) tir__f32_to_f16_sc(dst + i, src + i, n - i);
 }
 

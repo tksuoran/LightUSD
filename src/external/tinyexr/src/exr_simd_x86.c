@@ -322,7 +322,10 @@ void exr_half_to_float_f16c(const uint16_t *src, float *dst, size_t count) {
     }
 }
 
-#define EXR_F16_RND (_MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC)
+/* VCVTPS2PH takes a 3-bit imm8 (bits 0-1: rounding mode, bit 2: use MXCSR).
+ * _MM_FROUND_NO_EXC (8) is outside that field: MSVC rejects it with C4556
+ * and GCC/Clang silently ignore it, so pass only the rounding mode. */
+#define EXR_F16_RND _MM_FROUND_TO_NEAREST_INT
 EXR_TARGET("avx2,f16c")
 void exr_float_to_half_f16c(const float *src, uint16_t *dst, size_t count) {
     size_t i = 0;
