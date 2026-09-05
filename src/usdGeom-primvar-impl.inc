@@ -10,8 +10,17 @@
 // The instantiations themselves live in the inst TUs; usdGeom.hh's
 // EXTERN_TEMPLATE_GET_VALUE suppresses implicit instantiation everywhere else.
 
+#if defined(__GNUC__) && !defined(__clang__)
+    // Check if GCC version is 4.6 or higher
+    #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+        #define GCC_DIAGNOSTIC_PUSH_POP_SUPPORTED 1
+    #endif
+#endif
+
+#if defined(GCC_DIAGNOSTIC_PUSH_POP_SUPPORTED)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-template"
@@ -342,7 +351,9 @@ bool GeomPrimvar::get_value(double timecode, T *dest, value::TimeSampleInterpola
   return false;
 }
 
+#if defined(GCC_DIAGNOSTIC_PUSH_POP_SUPPORTED)
 #pragma GCC diagnostic pop
+#endif
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
