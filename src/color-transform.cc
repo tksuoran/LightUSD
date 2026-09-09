@@ -165,6 +165,16 @@ std::string CanonicalizeToken(const std::string &token) {
   for (const Alias &a : aliases) {
     if (token == a.alias) return a.canonical;
   }
+  // OpenUSD names display-referred variants of the interop set with a
+  // `_display` suffix (e.g. `srgb_rec709_display`, as written by Blender).
+  // They share primaries and transfer function with the `_scene` variant.
+  static const char kDisplaySuffix[] = "_display";
+  const size_t suffix_len = sizeof(kDisplaySuffix) - 1;
+  if (token.size() > suffix_len &&
+      token.compare(token.size() - suffix_len, suffix_len, kDisplaySuffix) ==
+          0) {
+    return token.substr(0, token.size() - suffix_len) + "_scene";
+  }
   return token;
 }
 

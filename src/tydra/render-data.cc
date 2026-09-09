@@ -3098,6 +3098,7 @@ bool InferColorSpace(const value::token &tok, ColorSpace *cty) {
       {"Raw", ColorSpace::Raw},
       {"srgb", ColorSpace::sRGB},
       {"srgb_rec709_scene", ColorSpace::sRGB},
+      {"srgb_rec709_display", ColorSpace::sRGB},  // OpenUSD display-referred variant
       {"sRGB", ColorSpace::sRGB},
       {"srgb_texture", ColorSpace::sRGB_Texture},  // MaterialX texture colorspace
       {"linear", ColorSpace::Lin_sRGB},  // guess linear_srgb
@@ -3105,22 +3106,30 @@ bool InferColorSpace(const value::token &tok, ColorSpace *cty) {
       {"rec709", ColorSpace::Rec709},
       {"lin_rec709", ColorSpace::Lin_Rec709},  // MaterialX/OpenUSD linear Rec.709
       {"lin_rec709_scene", ColorSpace::Lin_Rec709},
+      {"lin_rec709_display", ColorSpace::Lin_Rec709},
       {"g22_rec709", ColorSpace::g22_Rec709},  // MaterialX/OpenUSD gamma 2.2 Rec.709
       {"g22_rec709_scene", ColorSpace::g22_Rec709},
+      {"g22_rec709_display", ColorSpace::g22_Rec709},
       {"g18_rec709", ColorSpace::g18_Rec709},  // MaterialX/OpenUSD gamma 1.8 Rec.709
       {"g18_rec709_scene", ColorSpace::g18_Rec709},
+      {"g18_rec709_display", ColorSpace::g18_Rec709},
       {"lin_rec2020", ColorSpace::Lin_Rec2020},  // Linear Rec.2020
       {"lin_rec2020_scene", ColorSpace::Lin_Rec2020},
+      {"lin_rec2020_display", ColorSpace::Lin_Rec2020},
       {"acescg", ColorSpace::Lin_ACEScg},  // Alternative ACES CG naming
       {"lin_ap1", ColorSpace::Lin_ACEScg},  // Linear AP1 (same as ACEScg)
       {"lin_ap1_scene", ColorSpace::Lin_ACEScg},
+      {"lin_ap1_display", ColorSpace::Lin_ACEScg},
       {"aces2065-1", ColorSpace::ACES2065_1},  // ACES 2065-1
       {"lin_ap0_scene", ColorSpace::ACES2065_1},
+      {"lin_ap0_display", ColorSpace::ACES2065_1},
       {"ocio", ColorSpace::OCIO},
       {"lin_displayp3", ColorSpace::Lin_DisplayP3},
       {"lin_p3d65_scene", ColorSpace::Lin_DisplayP3},
+      {"lin_p3d65_display", ColorSpace::Lin_DisplayP3},
       {"srgb_displayp3", ColorSpace::sRGB_DisplayP3},
       {"srgb_p3d65_scene", ColorSpace::sRGB_DisplayP3},
+      {"srgb_p3d65_display", ColorSpace::sRGB_DisplayP3},
       // seen in Apple's USDZ model (or OCIO?)
       {"ACES - ACEScg", ColorSpace::Lin_ACEScg},
       {"Input - Texture - sRGB - Display P3", ColorSpace::sRGB_DisplayP3},
