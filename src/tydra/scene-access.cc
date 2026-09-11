@@ -4012,6 +4012,7 @@ GetBlendShapes(const lightusd::Stage &stage, const lightusd::Prim &prim,
 bool GetGeomPrimvar(const Stage &stage, const GPrim *gprim,
                     const std::string &varname, GeomPrimvar *out_primvar,
                     std::string *err, std::string *warn) {
+  (void)warn;  // nothing GetGeomPrimvar reads is warning-worthy today
   if (!out_primvar) {
     PUSH_ERROR_AND_RETURN("Output GeomPrimvar is nullptr.");
   }
@@ -4104,16 +4105,13 @@ bool GetGeomPrimvar(const Stage &stage, const GPrim *gprim,
         }
 
         if (!terminal_indexAttr.has_value() && !terminal_indexAttr.has_timesamples()) {
-          // No authored terminal indices value → treat as un-indexed (use the
-          // primvar values directly) instead of failing, as above.
+          // No authored terminal indices value: the primvar is un-indexed (use
+          // the primvar values directly), exactly as OpenUSD's
+          // UsdGeomPrimvar::IsIndexed() (== indices HasAuthoredValue()) treats
+          // it. Not a warning: a valueless declaration is spec-conformant.
           DCOUT("primvars:" << varname
                 << ":indices (terminal) declared with no authored value; "
                    "treating primvar as un-indexed.");
-          if (warn) {
-            (*warn) += fmt::format(
-                "`primvars:{}:indices` (terminal) is declared with no authored "
-                "value; treating the primvar as un-indexed.\n", varname);
-          }
         }
 
         if (terminal_indexAttr.has_timesamples()) {
@@ -4152,18 +4150,16 @@ bool GetGeomPrimvar(const Stage &stage, const GPrim *gprim,
       } else {
 
         if (!indexAttr.has_value() && !indexAttr.has_timesamples()) {
-          // No authored indices value — e.g. the empty `int[] primvars:st:indices`
-          // in usd-wg TextureTransformTest. Treat the primvar as un-indexed (use
-          // its values directly) instead of failing, matching the blocked-indices
-          // case above and OpenUSD.
+          // No authored indices value, e.g. the bare `int[] primvars:st:indices`
+          // declaration Unity exports (usd-wg AlphaBlendModeTest,
+          // TextureTransformTest). The primvar is un-indexed (use its values
+          // directly), matching the blocked-indices case above and OpenUSD's
+          // UsdGeomPrimvar::IsIndexed() (== indices HasAuthoredValue()). Not a
+          // warning: a valueless declaration is spec-conformant and OpenUSD
+          // reports nothing for it.
           DCOUT("primvars:" << varname
                 << ":indices declared with no authored value; treating primvar "
                    "as un-indexed.");
-          if (warn) {
-            (*warn) += fmt::format(
-                "`primvars:{}:indices` is declared with no authored value; "
-                "treating the primvar as un-indexed.\n", varname);
-          }
         }
 
         if (indexAttr.has_value()) {

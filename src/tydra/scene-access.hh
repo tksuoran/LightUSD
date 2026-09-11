@@ -580,9 +580,9 @@ bool GetTerminalAttribute(const Layer &layer, const TypedAttribute<T> &attr,
 /// @param[in] name Primvar name(`primvars:` prefix omitted)
 /// @param[out] primvar GeomPrimvar output.
 /// @param[out] err Error message.
-/// @param[out] warn Non-fatal warning message (optional). e.g. a
+/// @param[out] warn Non-fatal warning message (optional). A
 ///                  `primvars:<name>:indices` declared with no authored value
-///                  (treated as un-indexed).
+///                  is treated as un-indexed silently, as OpenUSD does.
 ///
 /// @return true upon success.
 ///
