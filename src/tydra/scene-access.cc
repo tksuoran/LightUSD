@@ -970,6 +970,9 @@ nonstd::expected<bool, std::string> GetPrimProperty(
   return true;
 }
 
+nonstd::expected<bool, std::string> GetGPrimPropertyImpl(
+    const GPrim &gprim, const std::string &prop_name, Property *out_prop);
+
 template <>
 nonstd::expected<bool, std::string> GetPrimProperty(
     const GeomMesh &mesh, const std::string &prop_name, Property *out_prop) {
@@ -1005,13 +1008,11 @@ nonstd::expected<bool, std::string> GetPrimProperty(
       return false;
     }
   } else {
-    const auto it = mesh.props.find(prop_name);
-    if (it == mesh.props.end()) {
-      // Attribute not found.
-      return false;
-    }
-
-    (*out_prop) = it->second;
+    // GPrim attributes (`extent`, `doubleSided`, `orientation`, `purpose`,
+    // `visibility`), xformOps and custom properties. GetPrimPropertyNamesImpl
+    // lists the authored GPrim attributes, so the lookup has to resolve them
+    // too or every authored `extent` reads as "does not exist".
+    return GetGPrimPropertyImpl(mesh, prop_name, out_prop);
   }
 
   DCOUT("Prop found: " << prop_name
